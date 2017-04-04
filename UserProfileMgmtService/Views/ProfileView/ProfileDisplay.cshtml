@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "ProfileDisplay";
+}
+@section scripts {
+    <script src="~/Scripts/App/MainAppController.js"></script>
+    <script src="~/Scripts/App/ProfileController.js"></script>
+}
+<h2>ProfileDisplay</h2>
+<div ng-app="userProfileModule">
+    <div ng-controller="profileController as $ctrl">
+        <div class="divGroup">
+            <h4 class="marginBeforeText"><b>Search</b></h4>
+            <table class="marginBeforeText" cellspacing="5" cellpadding="5">
+                <tr>
+                    <td>Profile Id : <input type="text" id="txtSearch" ng-model="txtProfileId" /></td>
+                    <td>Select Deleted Profiles : <input type="checkbox" id="chkDeleted" ng-model="getDeleted" /></td>
+                    <td>&nbsp;&nbsp;<input type="button" id="btnSearch" value="Search" name="Search" ng-click="SearchProfileId(txtProfileId)" /> </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <button class="btn-lg" ng-click="$ctrl.addNew('lg')">Add New Profile</button><br />
+        <div class="divGroup" style="float:left; border:1px solid black;width:50%">
+            <h4 class="marginBeforeText"><b>Profile List</b></h4>
+            <table class="table table-bordered table-hover table-condensed" style="background-color:#E7E7E7" cellspacing="5" cellpadding="5">
+                <thead>
+                    <tr>
+                        <th class="hideColumn">PID</th>
+                        <th> </th>
+                        <th>Profile ID</th>
+                        <th>Profile Description</th>
+                        <th class="hideColumn">Active</th>
+                        <th class="hideColumn">Created On</th>
+                        <th class="hideColumn">Created By</th>
+                        <th class="hideColumn">Updated On</th>
+                        <th class="hideColumn">Updated By</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="profile in profiles" ng-dblclick="" >
+                    <td class="hideColumn">{{profile.pID}}</td>
+                    <td align="center"><a href="" ng-click="DeleteProfiles($index)"><span title="Delete {{profile.ProfileId}}" class="glyphicon glyphicon-remove"></span></a></td>
+                    <td><a href="" ng-click="$ctrl.modify('lg','',profile)"><span title="Modify {{profile.ProfileId}}" class="glyphicon glyphicon-pencil"></span></a>&nbsp;{{profile.ProfileId}}</td>
+                    <td>{{profile.Description}}</td>
+                    <td class="hideColumn">{{profile.Enabled}}</td>
+                    <td class="hideColumn">{{profile.createdOn}}</td>
+                    <td class="hideColumn">{{profile.CreatedBy}}</td>
+                    <td class="hideColumn">{{profile.UpdatedOn}}</td>
+                    <td class="hideColumn">{{profile.UpdatedBy}}</td>
+                </tr>
+                <tr ng-show="errorMessage != ''"><td colspan="3">{{errorMessage}}</td></tr>
+                <tfoot ng-show="totalItems > numberOfRowsPerPage">
+                    <tr>
+                        <td style="text-align:left;vertical-align:top" colspan="3">
+                            <div>
+                                <ul uib-pagination boundary-links="true" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" num-pages="numPages" total-items="totalItems" max-size=10 ng-change="pageChanged()" ng-model="currentPage" items-per-page="numberOfRowsPerPage"></ul>
+                                <br />Page: {{currentPage}} / {{numPages}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;vertical-align:top" colspan="3"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <script type="text/ng-template" id="ModifyProfileModal.html">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modify-profile-modal-title"><b>Modify Profile</b></h4>
+            </div>
+            <div class="divGroup modal-body" id="modify-profile-modal-body">
+
+                <table>
+                    <tr hidden="hidden">
+                        <td><label>uID</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedProfileToModify.pID" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Profile ID</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedProfileToModify.ProfileId" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="Description">Description</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedProfileToModify.Description" size="2000" /></td>
+                    </tr>
+                    <tr hidden="hidden">
+                        <td><label>Updated By</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedProfileToModify.UpdatedBy" /></td>
+                    </tr>
+                    <tr hidden="hidden">
+                        <td><label>Updated On</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedProfileToModify.UpdatedOn" /></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-disabled="$ctrl.isModifyProfileDisabled" ng-click="$ctrl.isModifyProfileDisabled=true; $ctrl.ok()">Save</button>
+                <button class="btn btn-warning" type="button" ng-disabled="$ctrl.isModifyProfileDisabled" ng-click="$ctrl.isModifyProfileDisabled=true; $ctrl.cancel()">Cancel</button>
+            </div>
+        </script>
+        <script type="text/ng-template" id="AddProfileModal.html">
+            <div class="modal-header">
+                <h4 class="modal-title" id="add-profile-modal-title"><b>Add New Profile</b></h4>
+            </div>
+            <div class="divGroup modal-body" id="add-profile-modal-body">
+
+                <table>
+                    <tr>
+                        <td><label>Profile ID</label></td>
+                        <td><input type="text" ng-model="$ctrl.addNewProfileData.ProfileId" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="Description">Description</label></td>
+                        <td><input type="text" ng-model="$ctrl.addNewProfileData.Description" size="2000" /></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-disabled="$ctrl.isAddProfileDisabled" ng-click="$ctrl.isAddProfileDisabled=true; $ctrl.AddNewProfile()">Save</button>
+                <button class="btn btn-warning" type="button" ng-disabled="$ctrl.isAddProfileDisabled" ng-click="$ctrl.isAddProfileDisabled=true; $ctrl.cancel()">Cancel</button>
+            </div>
+        </script>
+    </div>
+
+
+</div>
+
+

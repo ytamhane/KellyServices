@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="UserProfileMgmtDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblProfile">
+          <Key>
+            <PropertyRef Name="pID" />
+          </Key>
+          <Property Name="pID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProfileId" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Enabled" Type="bit" Nullable="false" />
+          <Property Name="createdOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="UpdatedOn" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="uID" />
+          </Key>
+          <Property Name="uID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="createdOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="UpdatedOn" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="tblUserProfile">
+          <Key>
+            <PropertyRef Name="uID" />
+            <PropertyRef Name="pID" />
+          </Key>
+          <Property Name="uID" Type="int" Nullable="false" />
+          <Property Name="pID" Type="int" Nullable="false" />
+          <Property Name="createdOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_pID">
+          <End Role="tblProfile" Type="Self.tblProfile" Multiplicity="1" />
+          <End Role="tblUserProfile" Type="Self.tblUserProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblProfile">
+              <PropertyRef Name="pID" />
+            </Principal>
+            <Dependent Role="tblUserProfile">
+              <PropertyRef Name="pID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_uID">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+          <End Role="tblUserProfile" Type="Self.tblUserProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="uID" />
+            </Principal>
+            <Dependent Role="tblUserProfile">
+              <PropertyRef Name="uID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="UserProfileMgmtDbModelStoreContainer">
+          <EntitySet Name="tblProfile" EntityType="Self.tblProfile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblUserProfile" EntityType="Self.tblUserProfile" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_pID" Association="Self.fk_pID">
+            <End Role="tblProfile" EntitySet="tblProfile" />
+            <End Role="tblUserProfile" EntitySet="tblUserProfile" />
+          </AssociationSet>
+          <AssociationSet Name="fk_uID" Association="Self.fk_uID">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblUserProfile" EntitySet="tblUserProfile" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="UserProfileMgmtDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Profile">
+          <Key>
+            <PropertyRef Name="pID" />
+          </Key>
+          <Property Name="pID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProfileId" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Enabled" Type="Boolean" Nullable="false" />
+          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserProfiles" Relationship="Self.fk_pID" FromRole="tblProfile" ToRole="tblUserProfile" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="uID" />
+          </Key>
+          <Property Name="uID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserProfiles" Relationship="Self.fk_uID" FromRole="tblUser" ToRole="tblUserProfile" />
+        </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="uID" />
+            <PropertyRef Name="pID" />
+          </Key>
+          <Property Name="uID" Type="Int32" Nullable="false" />
+          <Property Name="pID" Type="Int32" Nullable="false" />
+          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="profile" Relationship="Self.fk_pID" FromRole="tblUserProfile" ToRole="tblProfile" />
+          <NavigationProperty Name="user" Relationship="Self.fk_uID" FromRole="tblUserProfile" ToRole="tblUser" />
+        </EntityType>
+        <Association Name="fk_pID">
+          <End Role="tblProfile" Type="UserProfileMgmtDbModel.Profile" Multiplicity="1" />
+          <End Role="tblUserProfile" Type="UserProfileMgmtDbModel.UserProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblProfile">
+              <PropertyRef Name="pID" />
+            </Principal>
+            <Dependent Role="tblUserProfile">
+              <PropertyRef Name="pID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_uID">
+          <End Role="tblUser" Type="UserProfileMgmtDbModel.User" Multiplicity="1" />
+          <End Role="tblUserProfile" Type="UserProfileMgmtDbModel.UserProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="uID" />
+            </Principal>
+            <Dependent Role="tblUserProfile">
+              <PropertyRef Name="uID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="UserProfileMgmtEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Profiles" EntityType="UserProfileMgmtDbModel.Profile" />
+          <EntitySet Name="Users" EntityType="UserProfileMgmtDbModel.User" />
+          <EntitySet Name="UserProfiles" EntityType="UserProfileMgmtDbModel.UserProfile" />
+          <AssociationSet Name="fk_pID" Association="Self.fk_pID">
+            <End Role="tblProfile" EntitySet="Profiles" />
+            <End Role="tblUserProfile" EntitySet="UserProfiles" />
+          </AssociationSet>
+          <AssociationSet Name="fk_uID" Association="Self.fk_uID">
+            <End Role="tblUser" EntitySet="Users" />
+            <End Role="tblUserProfile" EntitySet="UserProfiles" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="UserProfileMgmtDbModelStoreContainer" CdmEntityContainer="UserProfileMgmtEntities">
+          <EntitySetMapping Name="Profiles">
+            <EntityTypeMapping TypeName="UserProfileMgmtDbModel.Profile">
+              <MappingFragment StoreEntitySet="tblProfile">
+                <ScalarProperty Name="pID" ColumnName="pID" />
+                <ScalarProperty Name="ProfileId" ColumnName="ProfileId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="UserProfileMgmtDbModel.User">
+              <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="uID" ColumnName="uID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfiles">
+            <EntityTypeMapping TypeName="UserProfileMgmtDbModel.UserProfile">
+              <MappingFragment StoreEntitySet="tblUserProfile">
+                <ScalarProperty Name="uID" ColumnName="uID" />
+                <ScalarProperty Name="pID" ColumnName="pID" />
+                <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

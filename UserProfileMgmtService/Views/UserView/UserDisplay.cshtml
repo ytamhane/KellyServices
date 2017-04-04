@@ -1,0 +1,194 @@
+﻿
+@{
+    ViewBag.Title = "UserDisplay";
+}
+@section scripts {
+    <script src="~/Scripts/App/MainAppController.js"></script>
+    <script src="~/Scripts/App/UserController.js"></script>
+}
+<h2>UserDisplay</h2>
+<div ng-app="userProfileModule">
+    <div ng-controller="userController as $ctrl">
+        <div class="divGroup">
+            <h4 class="marginBeforeText"><b>Search</b></h4>
+            <table class="marginBeforeText" cellspacing="5" cellpadding="5">
+                <tr>
+                    <td>User Id : <input type="text" id="txtSearch" ng-model="txtUserId" /></td>
+                    <td>Select Deleted Users : <input type="checkbox" id="chkDeleted" ng-model="getDeleted" /></td>
+                    <td>&nbsp;&nbsp;<input type="button" id="btnSearch" value="Search" name="Search" ng-click="SearchUserId(txtUserId)" /> </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <button class="btn-lg" ng-click="$ctrl.addNew('lg')">Add New User</button><br />
+        <div class="divGroup" style="float:left; border:1px solid black;width:50%">
+            <h4 class="marginBeforeText"><b>User List</b></h4>
+            <table class="table table-bordered table-hover table-condensed" style="background-color:#E7E7E7" cellspacing="5" cellpadding="5">
+                <thead>
+                    <tr>
+                        <th class="hideColumn">UID</th>
+                        <th> </th>
+                        <th>User ID</th>
+                        <th>User Name</th>
+                        <th>Profiles Assigned</th>
+                        <th> </th>
+                        <th class="hideColumn">Active</th>
+                        <th class="hideColumn">Created On</th>
+                        <th class="hideColumn">Created By</th>
+                        <th class="hideColumn">Updated On</th>
+                        <th class="hideColumn">Updated By</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="user in users">
+                    <td class="hideColumn">{{user.uID}}</td>
+                    <td align="center"><a href="" ng-click="DeleteUsers($index)"><span title="Delete {{user.UserName}}" class="glyphicon glyphicon-remove"></span></a></td>
+                    <td><a href="" ng-click="$ctrl.modify('lg',user)"><span title="Modify {{user.UserName}}" class="glyphicon glyphicon-pencil"></span></a>&nbsp;{{user.UserID}}</td>
+                    <td>{{user.UserName}}</td>
+                    <td>
+                        <a href="" ng-click="$ctrl.assignProfiles('lg',user)"><span title="Assign profiles to {{user.UserName}}" class="glyphicon glyphicon-pencil"></span></a>&nbsp;
+                        <span ng-repeat="profileEntity in user.UserProfileEntities">
+                            {{profileEntity.profileId}}<span ng-show=" ! $last ">,</span>
+                        </span>
+
+                    </td>
+                    <td></td>
+                    <td class="hideColumn">{{user.Active}}</td>
+                    <td class="hideColumn">{{user.createdOn}}</td>
+                    <td class="hideColumn">{{user.CreatedBy}}</td>
+                    <td class="hideColumn">{{user.UpdatedOn}}</td>
+                    <td class="hideColumn">{{user.UpdatedBy}}</td>
+                </tr>
+                <tr ng-show="errorMessage != ''"><td colspan="3">{{errorMessage}}</td></tr>
+                <tfoot ng-show="totalItems > numberOfRowsPerPage">
+                    <tr>
+                        <td style="text-align:left;vertical-align:top" colspan="3">
+                            <div>
+                                <ul uib-pagination boundary-links="true" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" num-pages="numPages" total-items="totalItems" max-size=10 ng-change="pageChanged()" ng-model="currentPage" items-per-page="numberOfRowsPerPage"></ul>
+                                <br />Page: {{currentPage}} / {{numPages}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;vertical-align:top" colspan="3"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <script type="text/ng-template" id="ModifyUserModal.html">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modify-user-modal-title"><b>Modify User</b></h4>
+            </div>
+            <div class="divGroup modal-body" id="modify-user-modal-body">
+                <table>
+                    <tr hidden="hidden">
+                        <td><label>uID</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedUserToModify.uID" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>User ID</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedUserToModify.UserID" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="UserName">User Name</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedUserToModify.UserName" /></td>
+                    </tr>
+                    <tr hidden="hidden">
+                        <td><label>Updated By</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedUserToModify.UpdatedBy" /></td>
+                    </tr>
+                    <tr hidden="hidden">
+                        <td><label>Updated On</label></td>
+                        <td><input type="text" ng-model="$ctrl.selectedUserToModify.UpdatedOn" /></td>
+                    </tr>
+                    @*<tr>
+                            <td><label>Profiles Assigned</label></td>
+                            <td>
+                                <span ng-repeat="profileEntity in selectedUser.UserProfileEntities">
+                                    {{profileEntity.profileId}}<span ng-show=" ! $last ">,</span>
+                                </span>
+                            </td>
+                        </tr>*@
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-disabled="$ctrl.isModifyUserDisabled" ng-click="$ctrl.isModifyUserDisabled=true; $ctrl.ok()">Save</button>
+                <button class="btn btn-warning" type="button" ng-disabled="$ctrl.isModifyUserDisabled" ng-click="$ctrl.isModifyUserDisabled=true; $ctrl.cancel()">Cancel</button>
+            </div>
+        </script>
+        <script type="text/ng-template" id="AddUserModal.html">
+            <div class="modal-header">
+                <h4 class="modal-title" id="add-user-modal-title"><b>Add User</b></h4>
+            </div>
+            <div class="divGroup modal-body" id="add-user-modal-body">
+                <table>
+                    <tr>
+                        <td><label>User ID</label></td>
+                        <td><input type="text" ng-model="$ctrl.newUser.UserID" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="UserName">User Name</label></td>
+                        <td><input type="text" ng-model="$ctrl.newUser.UserName" /></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-disabled="$ctrl.isAddUserDisabled" ng-click="$ctrl.isAddUserDisabled=true; $ctrl.AddNewUser()">Save</button>
+                <button class="btn btn-warning" type="button" ng-disabled="$ctrl.isAddUserDisabled" ng-click="$ctrl.isAddUserDisabled=true; $ctrl.cancel()">Cancel</button>
+            </div>
+        </script>
+        <script type="text/ng-template" id="AssignProfilesModal.html">
+            <div class="modal-header">
+                <h4 class="modal-title" id="assign-profile-modal-title"><b>Assign Profiles</b></h4>
+            </div>
+            <div class="divGroup modal-body" id="assign-profile-modal-body">
+                <table>
+                    <tr hidden="hidden">
+                        <td><label>uID</label></td>
+                        <td><input type="hidden" ng-model="$ctrl.selectedUserToModify.uID" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>User ID</label></td>
+                        <td><span>{{$ctrl.selectedUserToModify.UserID}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><label for="UserName">User Name</label></td>
+                        <td><span>{{$ctrl.selectedUserToModify.UserName}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><label>Profiles Assigned</label></td>
+                        <td>
+                            <span ng-repeat="profileEntity in $ctrl.selectedUserToModify.UserProfileEntities">
+                                {{profileEntity.profileId}}<span ng-show=" ! $last ">,</span>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div style="float:left;width:500px;overflow-y: auto;height: 1000px;">
+                                <table class="table table-bordered table-hover table-condensed" style="background-color:#E7E7E7" cellspacing="5" cellpadding="5">
+                                    <tr ng-repeat="profile in $ctrl.AllProfiles">
+                                        <td class="hideColumn">{{profile.pID}}</td>
+                                        <td align="center"><input type="checkbox" id="{{profile.pID}}" value="{{profile.pID}}" ng-checked="$ctrl.selectedProfilesToAssign.indexOf(profile.pID) > -1" ng-click="$ctrl.toggleProfileSelection(profile.pID)" /> </td>
+                                        <td>{{profile.ProfileId}}</td>
+                                        <td>{{profile.Description}}</td>
+                                    </tr>
+                                    <tr ng-show="errorMessage != ''"><td colspan="3">{{errorMessage}}</td></tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-disabled="$ctrl.isAssignProfilesDisabled" ng-click="$ctrl.isAssignProfilesDisabled=true; $ctrl.assignProfilesToUser()">Assign Profiles</button>
+                <button class="btn btn-warning" type="button" ng-disabled="$ctrl.isAssignProfilesDisabled"ng-click="$ctrl.isAssignProfilesDisabled=true; $ctrl.cancel()">Cancel</button>
+            </div>
+        </script>
+    </div>
+</div>
+

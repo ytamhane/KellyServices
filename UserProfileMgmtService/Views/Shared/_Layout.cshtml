@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-animate.js"></script>
+    <script src="~/Scripts/angular-sanitize.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.2.0.js"></script>
+    <style>
+        #exTab1 .tab-content {
+            color: white;
+            background-color: #428bca;
+            padding: 5px 15px;
+        }
+
+
+        #exTab1 .nav-pills > li > a {
+            border-radius: 0;
+        }
+
+        .hideColumn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <!-- Header start -->
+        <!-- Top Bar start -->
+        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td align="left" valign="top" style="background-image: url('/UserProfileMgmtServices/images/kelly-header-topleft.png'); background-repeat: repeat-x;">
+                    &nbsp;
+                </td>
+                <td align="right" valign="middle" style="height: 33px; width: 300px; background-image: url('/UserProfileMgmtServices/images/kelly-header-topright.png'); background-repeat: no-repeat;"></td>
+            </tr>
+        </table>
+        <!-- Top Bar end -->
+        <!-- Logo and Menus start -->
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-image: url('/UserProfileMgmtServices/images/kelly-header-stripes.png'); background-repeat: repeat-x;">
+            <tr>
+                <td align="left" valign="top" onclick="javascript:location.href='/Default.aspx';" style="width: 371px; height: 100px; background-image: url('/UserProfileMgmtServices/Images/kelly-header-iamlogo.png'); background-repeat: no-repeat; background-position: center center;">
+                    &nbsp;
+                </td>
+                <td align="right" valign="bottom" style="padding-right: 20px; padding-bottom: 10px;">
+                    <table cellspacing="0" cellpadding="0" border="0" style="height: 80px">
+                        <tr>
+                            <td align="right" valign="top">
+                                <div class="ssoUser">
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" valign="bottom"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <!-- Logo and Menus end -->
+        <!-- Header end -->
+    </div>
+    @{ var controller = ViewContext.RouteData.Values["controller"]; }
+    <div style="width:100%">
+        <div id="exTab1" style="font-size:medium;">
+            <ul class="nav nav-pills">
+                <li @(controller.ToString() == "UserView" ? "class=active" :"")>@Html.ActionLink("User Management", "UserDisplay", "UserView", null, null)</li>
+                <li @(controller.ToString() == "ProfileView" ? "class=active" :"")>@Html.ActionLink("Profile Management", "ProfileDisplay", "ProfileView", null, null)</li>
+            </ul>
+        </div>
+    </div>
+    <div  class="tab-content clearfix">
+        @RenderBody()
+        <hr />
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
